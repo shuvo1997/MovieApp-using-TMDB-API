@@ -24,6 +24,7 @@
 		A79A41FB291BE31A005B4CBA /* UserStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79A41FA291BE31A005B4CBA /* UserStateViewModel.swift */; };
 		A79E1E65291CCAB100BF4851 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79E1E64291CCAB100BF4851 /* ErrorView.swift */; };
 		A79E1E67291CF2AD00BF4851 /* AuthTokenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79E1E66291CF2AD00BF4851 /* AuthTokenViewModel.swift */; };
+		A7F22CD82920FA93001ECECC /* AlertDialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F22CD72920FA93001ECECC /* AlertDialogViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		A79A41FA291BE31A005B4CBA /* UserStateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStateViewModel.swift; sourceTree = "<group>"; };
 		A79E1E64291CCAB100BF4851 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		A79E1E66291CF2AD00BF4851 /* AuthTokenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTokenViewModel.swift; sourceTree = "<group>"; };
+		A7F22CD72920FA93001ECECC /* AlertDialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDialogViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 				A79A41F8291BE2F7005B4CBA /* MovieListViewModel.swift */,
 				A79A41FA291BE31A005B4CBA /* UserStateViewModel.swift */,
 				A79E1E66291CF2AD00BF4851 /* AuthTokenViewModel.swift */,
+				A7F22CD72920FA93001ECECC /* AlertDialogViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				A72C60F1291A673C00A7A5D9 /* APIService.swift in Sources */,
 				A72C60C22918EBB700A7A5D9 /* ContentView.swift in Sources */,
 				A72C60F3291A79C000A7A5D9 /* MovieResponse.swift in Sources */,
+				A7F22CD82920FA93001ECECC /* AlertDialogViewModel.swift in Sources */,
 				A79A41F6291BC3E4005B4CBA /* Favorites.swift in Sources */,
 				A72C60C02918EBB700A7A5D9 /* MovieAppApp.swift in Sources */,
 				A72C60EC2918F88C00A7A5D9 /* KeychainManager.swift in Sources */,

@@ -13,16 +13,17 @@ struct MovieAppApp: App {
     @StateObject var favorites = Favorites()
     @StateObject var userStateViewModel = UserStateViewModel()
     @StateObject var authTokenViewModel = AuthTokenViewModel()
+    @StateObject var alertViewModel = AlertDialogViewModel()
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
+            NavigationStack {
                 ApplicationSwitcher()
             }
-            .accentColor(Color("Color"))
             .environmentObject(favorites)
             .environmentObject(userStateViewModel)
             .environmentObject(authTokenViewModel)
+            .environmentObject(alertViewModel)
         }
     }
 }
@@ -30,16 +31,22 @@ struct MovieAppApp: App {
 struct ApplicationSwitcher: View {
     @EnvironmentObject var vm: UserStateViewModel
     @EnvironmentObject var authVM: AuthTokenViewModel
+    @EnvironmentObject var alertVM: AlertDialogViewModel
     
     var body: some View {
-        if vm.isLoggedIn {
-            MovieListView()
-        }
-        else {
-            ContentView()
-                .onAppear{
-                    authVM.deleteToken()
-                }
+        ZStack{
+            if vm.isLoggedIn {
+                MovieListView()
+            }
+            else {
+                ContentView()
+                    .onAppear{
+                        authVM.deleteToken()
+                    }
+            }
+            if alertVM.alert {
+                ErrorView(error: $alertVM.error, alert: $alertVM.alert, isConfirmationView: $alertVM.isConfirmationView, alertTitle: $alertVM.alertTitle)
+            }
         }
     }
 }

@@ -22,6 +22,8 @@ struct Login: View {
     @State var alert = false
     @State var error = ""
     @State private var isVerified = false
+    @State private var isConfirmationView = false
+    @State private var alertTitle = ""
     
     
     @State private var keychainUsername: String = ""
@@ -29,6 +31,7 @@ struct Login: View {
     
     @EnvironmentObject var vm: UserStateViewModel
     @EnvironmentObject var authViewModel: AuthTokenViewModel
+    @EnvironmentObject var alertViewModel: AlertDialogViewModel
     
     init() {
         saveData()
@@ -128,9 +131,9 @@ struct Login: View {
                         
                     }
                     .padding(.horizontal, 25)
-                    if self.alert {
-                        ErrorView(error: self.$error, alert: self.$alert)
-                    }
+//                    if self.alert {
+//                        ErrorView(error: self.$error, alert: self.$alert, isConfirmationView: $isConfirmationView, alertTitle: $alertTitle)
+//                    }
                 }
             }
         }
@@ -140,20 +143,26 @@ struct Login: View {
         if self.username != "" && self.password != "" {
             getData()
             if username != keychainUsername {
-                self.error = "Username is incorrect"
-                self.alert.toggle()
+                alertViewModel.error = "Username is incorrect"
+                alertViewModel.alertTitle = "Error"
+//                self.alert.toggle()
+                alertViewModel.alert.toggle()
                 return
             }
             if password != keychainPassword {
-                self.error = "Password is incorrect"
-                self.alert.toggle()
+                alertViewModel.alertTitle = "Error"
+                alertViewModel.error = "Password is incorrect"
+//                self.alert.toggle()
+                alertViewModel.alert.toggle()
                 return
             }
             self.isVerified.toggle()
         }
         else {
-            self.error = "Please fill all the contents properly"
-            self.alert.toggle()
+            alertViewModel.alertTitle = "Error"
+            alertViewModel.error = "Please fill all the contents properly"
+//            self.alert.toggle()
+            alertViewModel.alert.toggle()
         }
     }
 }

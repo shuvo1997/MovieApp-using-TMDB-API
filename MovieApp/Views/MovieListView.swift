@@ -19,6 +19,13 @@ struct MovieListView: View {
     @EnvironmentObject var favorites: Favorites
     @EnvironmentObject var userVM: UserStateViewModel
     @EnvironmentObject var authVM: AuthTokenViewModel
+    @EnvironmentObject var alertVM: AlertDialogViewModel
+    
+    @State private var alert: Bool = false
+    @State private var isConfirmationView: Bool = true
+    @State private var error = ""
+    @State private var alertTitle = ""
+    @State private var timeCount = 0
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -31,69 +38,80 @@ struct MovieListView: View {
             ProgressView()
         }
         else {
-            VStack{
-                HStack {
-                    Text("Welcome")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    Spacer()
-                }
-                Picker("", selection: $selected){
-                    Text("Movie")
-                        .tag(SegmentedBarEnum.Movie)
-                    Text("Favorite")
-                        .tag(SegmentedBarEnum.Favorite)
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal,10)
-                
-                //MARK: - Showing Movie Data
-                if selected == SegmentedBarEnum.Movie {
-                    List{
-                        ForEach(viewModel.movieResponse?.results ?? [], id: \.self) { movie in
-                            NavigationLink(destination: MovieDetailsView(movie: movie)) {
-                                MovieRow(movie: movie)
-                            }
-                        }
+            
+            ZStack {
+                VStack{
+                    Picker("", selection: $selected){
+                        Text("Movie")
+                            .tag(SegmentedBarEnum.Movie)
+                        Text("Favorite")
+                            .tag(SegmentedBarEnum.Favorite)
                     }
-                    .onAppear{
-                        viewModel.fetch()
-                    }
-                    .onReceive(timer){_ in
-                        if authVM.checkExpired(currentTime: authVM.getTime()) {
-                            userVM.isLoggedIn = false
-                        }
-                    }
-                }
-                
-                //MARK: - Showing Favorite Data
-                else {
-                    List{
-                        ForEach(viewModel.movieResponse?.results ?? [], id: \.self) { movie in
-                            if favorites.contains(movie) {
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal,10)
+                    .padding(.top, 20)
+                    
+                    //MARK: - Showing Movie Data
+                    if selected == SegmentedBarEnum.Movie {
+                        List{
+                            ForEach(viewModel.movieResponse?.results ?? [], id: \.self) { movie in
                                 NavigationLink(destination: MovieDetailsView(movie: movie)) {
                                     MovieRow(movie: movie)
                                 }
                             }
                         }
+                        .onAppear{
+                            viewModel.fetch()
+                        }                    }
+                    
+                    //MARK: - Showing Favorite Data
+                    else {
+                        List{
+                            ForEach(viewModel.movieResponse?.results ?? [], id: \.self) { movie in
+                                if favorites.contains(movie) {
+                                    NavigationLink(destination: MovieDetailsView(movie: movie)) {
+                                        MovieRow(movie: movie)
+                                    }
+                                }
+                            }
+                        }
+                        .onAppear{
+                            viewModel.fetch()
+                        }
+                        Spacer()
                     }
-                    .onAppear{
-                        viewModel.fetch()
-                    }
-                    Spacer()
                 }
+                .padding(.horizontal, 15)
+//                if self.alert {
+//                    ErrorView(error: $error, alert: $alert, isConfirmationView: $isConfirmationView, alertTitle: $alertTitle)
+//                }
             }
-            .padding(.horizontal, 15)
-            .navigationBarBackButtonHidden(true)
+            .onReceive(timer){_ in
+                if timeCount == 15 {
+                    timer.upstream.connect().cancel()
+                    alertVM.alertTitle = "Session Expired"
+                    alertVM.isConfirmationView = false
+                    alertVM.error = "The auth token session is expired"
+//                    self.alert.toggle()
+                    alertVM.alert.toggle()
+                }
+                timeCount += 1
+                print("Counting time \(timeCount)")
+            }
+            .toolbarBackground(Color("Color"), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .navigationTitle("Welcome")
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 Button {
-                    Task{
-                        await userVM.signOut()
-                    }
-                    authVM.deleteToken()
+//                    alertVM.alert = true
+                    alertVM.isConfirmationView = true
+                    alertVM.error = "Do you want to log out?"
+                    alertVM.alertTitle = "Logout"
+                    alertVM.alert.toggle()
                 } label: {
                     Image(systemName:  "rectangle.portrait.and.arrow.right")
-                        .foregroundColor(Color("Color"))
+                        .foregroundColor(Color.white)
                 }
             }
         }
