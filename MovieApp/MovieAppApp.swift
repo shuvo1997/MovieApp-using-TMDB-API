@@ -17,7 +17,7 @@ struct MovieAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            NavigationView {
                 ApplicationSwitcher()
             }
             .environmentObject(favorites)
@@ -39,7 +39,7 @@ struct ApplicationSwitcher: View {
                 MovieListView()
             }
             else {
-                ContentView()
+                Login()
                     .onAppear{
                         authVM.deleteToken()
                     }

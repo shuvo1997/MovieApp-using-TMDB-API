@@ -14,6 +14,7 @@ struct MovieDetailsView: View {
 
     @EnvironmentObject var favorites: Favorites
     @EnvironmentObject var alertVM: AlertDialogViewModel
+    @EnvironmentObject var userVM: UserStateViewModel
     
     var body: some View {
         ZStack{
@@ -66,7 +67,6 @@ struct MovieDetailsView: View {
                                 .padding(.vertical)
                                 .frame(width: UIScreen.main.bounds.width - 40)
                         }
-                            
                     }
                     .background(Color("Color"))
                     .cornerRadius(10)
@@ -74,8 +74,7 @@ struct MovieDetailsView: View {
                 }
             }
             
-            
-            //MARK: - For session expire in other screens
+            //MARK: - For session expire in details screen
             if alertVM.alert {
                 ErrorView(error: $alertVM.error, alert: $alertVM.alert, isConfirmationView: $alertVM.isConfirmationView, alertTitle: $alertVM.alertTitle)
             }
@@ -83,19 +82,19 @@ struct MovieDetailsView: View {
         .toolbarBackground(Color("Color"), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
-        .toolbar {
-            Button {
-//                    alertVM.alert = true
-                alertVM.isConfirmationView = true
-                alertVM.error = "Do you want to log out?"
-                alertVM.alertTitle = "Logout"
-                alertVM.alert.toggle()
-            } label: {
-                Image(systemName:  "rectangle.portrait.and.arrow.right")
-                    .foregroundColor(Color.white)
-            }
-        }
-
+//        .toolbar {
+//            Button {
+//                alertVM.alert = true
+//                alertVM.isConfirmationView = true
+//                alertVM.error = "Do you want to log out?"
+//                alertVM.alertTitle = "Logout"
+//                alertVM.alert.toggle()
+//                userVM.isLoggedIn = false
+//            } label: {
+//                Image(systemName:  "rectangle.portrait.and.arrow.right")
+//                    .foregroundColor(Color.white)
+//            }
+//        }
     }
 }
 

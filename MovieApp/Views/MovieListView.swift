@@ -38,7 +38,6 @@ struct MovieListView: View {
             ProgressView()
         }
         else {
-            
             ZStack {
                 VStack{
                     Picker("", selection: $selected){
@@ -82,19 +81,23 @@ struct MovieListView: View {
                     }
                 }
                 .padding(.horizontal, 15)
-//                if self.alert {
-//                    ErrorView(error: $error, alert: $alert, isConfirmationView: $isConfirmationView, alertTitle: $alertTitle)
+//                if alertVM.alert {
+//                    ErrorView(error: $alertVM.error, alert: $alertVM.alert, isConfirmationView: $alertVM.isConfirmationView, alertTitle: $alertVM.alertTitle)
 //                }
             }
             .onReceive(timer){_ in
                 if timeCount == 15 {
-                    timer.upstream.connect().cancel()
+                    self.timer.upstream.connect().cancel()
                     alertVM.alertTitle = "Session Expired"
                     alertVM.isConfirmationView = false
                     alertVM.error = "The auth token session is expired"
 //                    self.alert.toggle()
+//                    Task{
+//                        await userVM.signOut()
+//                    }
                     alertVM.alert.toggle()
                 }
+//                timer.upstream.connect().cancel()
                 timeCount += 1
                 print("Counting time \(timeCount)")
             }
@@ -164,44 +167,6 @@ struct MovieRow: View {
 
 
 
-//MARK: - To fetch image using a url
-struct URLImage: View {
-    let baseURL = "https://image.tmdb.org/t/p/original"
-    let urlString: String
-    let imageWidth: CGFloat = 100
-    let imageHeight: CGFloat = 60
-    
-    @State var data: Data?
-    
-    var body: some View {
-        if let data = data, let uiimage = UIImage(data: data){
-            Image(uiImage: uiimage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: imageWidth, height: imageHeight)
-                .background(Color.gray)
-                .cornerRadius(10)
-        }
-        else{
-            ProgressView()
-                .frame(width: imageWidth, height: imageHeight)
-                .onAppear{
-                    fetchImageData()
-                }
-        }
-    }
-    private func fetchImageData() {
-        let fullUrl = baseURL + urlString
-       guard let url = URL(string: fullUrl) else {
-           return
-       }
-       
-       let task = URLSession.shared.dataTask(with: url){ data, _, _ in
-           self.data = data
-       }
-        task.resume()
-   }
-}
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {

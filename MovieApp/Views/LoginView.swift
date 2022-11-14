@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        Login()
-    }
-}
-
 struct Login: View {
     @State var color = Color.black.opacity(0.7)
     @State private var username: String = ""
@@ -114,7 +108,9 @@ struct Login: View {
                             Task {
                                 if isVerified {
                                     let result = await vm.signIn(username: username, password: password)
+                                    //                                        path.append(.ok)
                                     authViewModel.saveToken()
+                                    print("Navigating to movielist screen")
                                     print(result)
                                 }
                             }
@@ -131,45 +127,45 @@ struct Login: View {
                         
                     }
                     .padding(.horizontal, 25)
-//                    if self.alert {
-//                        ErrorView(error: self.$error, alert: self.$alert, isConfirmationView: $isConfirmationView, alertTitle: $alertTitle)
-//                    }
+                    //                    if self.alert {
+                    //                        ErrorView(error: self.$error, alert: self.$alert, isConfirmationView: $isConfirmationView, alertTitle: $alertTitle)
+                    //                    }
                 }
             }
         }
+        .navigationTitle("")
     }
     
  func verify() {
         if self.username != "" && self.password != "" {
             getData()
             if username != keychainUsername {
-                alertViewModel.error = "Username is incorrect"
-                alertViewModel.alertTitle = "Error"
-//                self.alert.toggle()
-                alertViewModel.alert.toggle()
+                configureAlertView(errorMsg: "Username is incorrect", errorTitle: "Error")
                 return
             }
             if password != keychainPassword {
-                alertViewModel.alertTitle = "Error"
-                alertViewModel.error = "Password is incorrect"
-//                self.alert.toggle()
-                alertViewModel.alert.toggle()
+                configureAlertView(errorMsg: "Password is incorrect", errorTitle: "Error")
                 return
             }
             self.isVerified.toggle()
         }
         else {
-            alertViewModel.alertTitle = "Error"
-            alertViewModel.error = "Please fill all the contents properly"
-//            self.alert.toggle()
-            alertViewModel.alert.toggle()
+            configureAlertView(errorMsg: "Please fill all the contents properly", errorTitle: "Error")
+            return
         }
+    }
+    
+    func configureAlertView(errorMsg: String, errorTitle: String) {
+        alertViewModel.isConfirmationView = false
+        alertViewModel.error = errorMsg
+        alertViewModel.alertTitle = errorTitle
+        alertViewModel.alert.toggle()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Login()
     }
 }
 
