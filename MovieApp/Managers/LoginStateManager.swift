@@ -16,6 +16,7 @@ class UserStateViewModel: ObservableObject {
     
     @Published var isLoggedIn = false
     @Published var isBusy = false
+    @Published var showMovieListScreen = false
     
     func signIn(username: String, password: String) async -> Result<Bool, UserStateError> {
         isBusy = true

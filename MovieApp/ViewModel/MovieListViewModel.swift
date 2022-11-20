@@ -7,33 +7,29 @@
 
 import Foundation
 
+struct Constants {
+    static let movieUrl = URL(string:"https://api.themoviedb.org/3/search/movie?api_key=38e61227f85671163c275f9bd95a8803&query=marvel")
+}
+
 
 class MovieListViewModel: ObservableObject {
-    @Published var movieResponse: MovieResponse?
+    @Published var movieData: [SingleMovie] = []
+    @Published var searchResults: [SingleMovie] = []
     
+    init() {
+        fetch()
+    }
     
     func fetch() {
-        guard let url = URL(string: "https://api.themoviedb.org/3/search/movie?api_key=38e61227f85671163c275f9bd95a8803&query=marvel") else{
-            return
-        }
-        let task = URLSession.shared.dataTask(with: url){ data, _, error in
-            guard let data = data, error == nil else {
-                return
-            }
-            
-            
-            //MARK: - Convert to json
-            
-            do{
-                let movies = try JSONDecoder().decode(MovieResponse.self, from: data)
+        URLSession.shared.request(url: Constants.movieUrl, expecting: MovieResponse.self) { result in
+            switch result {
+            case .success(let movies):
                 DispatchQueue.main.async {
-                    self.movieResponse = movies
+                    self.movieData = movies.results
                 }
-            }
-            catch{
-                print(error)
+            case .failure(let err):
+                print(err)
             }
         }
-        task.resume()
     }
 }

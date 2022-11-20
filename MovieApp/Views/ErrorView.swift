@@ -17,6 +17,8 @@ struct ErrorView: View {
     @Binding var isConfirmationView: Bool
     @Binding var alertTitle: String
     
+    @Binding var okButtonAction: (() -> Void)?
+    
     @EnvironmentObject var userVM: UserStateViewModel
     
     var body: some View {
@@ -34,15 +36,13 @@ struct ErrorView: View {
                 Text(self.error)
                     .foregroundColor(self.color)
                     .padding(.top)
+                    .padding(.horizontal, 10)
                 HStack {
                     Spacer()
                     if isConfirmationView {
-                        ErrorViewButton(alert: $alert, buttonText: "OK",action: {
-                            Task {
-                                await userVM.signOut()
-                            }
-                            self.alert.toggle()
-                        })
+                        if let action = okButtonAction {
+                            ErrorViewButton(alert: $alert, buttonText: "OK",action: action)
+                        }
                     }
                     ErrorViewButton(alert: $alert, buttonText: "Cancel", action: {
                         if alertTitle == "Session Expired" {
@@ -84,12 +84,5 @@ struct ErrorViewButton: View {
         .cornerRadius(10)
         .padding(.top, 25)
         .padding(.trailing, 10)
-        
     }
 }
-
-//struct ErrorView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ErrorView()
-//    }
-//}

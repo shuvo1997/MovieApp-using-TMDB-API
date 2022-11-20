@@ -36,19 +36,13 @@ struct URLImage: View {
     }
     private func fetchImageData() {
         let fullUrl = baseURL + urlString
-       guard let url = URL(string: fullUrl) else {
-           return
-       }
-       
-       let task = URLSession.shared.dataTask(with: url){ data, _, _ in
-           self.data = data
-       }
+        guard let url = URL(string: fullUrl) else {
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url){ data, _, _ in
+            self.data = data
+        }
         task.resume()
-   }
+    }
 }
-
-//struct URLImageView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        URLImage()
-//    }
-//}

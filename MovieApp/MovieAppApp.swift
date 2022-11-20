@@ -14,16 +14,14 @@ struct MovieAppApp: App {
     @StateObject var userStateViewModel = UserStateViewModel()
     @StateObject var authTokenViewModel = AuthTokenViewModel()
     @StateObject var alertViewModel = AlertDialogViewModel()
-
+    
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                ApplicationSwitcher()
-            }
-            .environmentObject(favorites)
-            .environmentObject(userStateViewModel)
-            .environmentObject(authTokenViewModel)
-            .environmentObject(alertViewModel)
+            ApplicationSwitcher()
+                .environmentObject(favorites)
+                .environmentObject(userStateViewModel)
+                .environmentObject(authTokenViewModel)
+                .environmentObject(alertViewModel)
         }
     }
 }
@@ -33,10 +31,21 @@ struct ApplicationSwitcher: View {
     @EnvironmentObject var authVM: AuthTokenViewModel
     @EnvironmentObject var alertVM: AlertDialogViewModel
     
+    @State var path = NavigationPath()
+    
     var body: some View {
         ZStack{
             if vm.isLoggedIn {
-                MovieListView()
+                NavigationStack(path: $path) {
+                    MovieListView()
+                }
+                .onReceive(MyNotificationManager.alertNotificationPublisher) { _ in
+                    print("Poseted Notification Received")
+                    alertVM.createAlertNotification {
+                        path = NavigationPath()
+                        alertVM.alert.toggle()
+                    }
+                }
             }
             else {
                 Login()
@@ -45,8 +54,9 @@ struct ApplicationSwitcher: View {
                     }
             }
             if alertVM.alert {
-                ErrorView(error: $alertVM.error, alert: $alertVM.alert, isConfirmationView: $alertVM.isConfirmationView, alertTitle: $alertVM.alertTitle)
+                ErrorView(error: $alertVM.error, alert: $alertVM.alert, isConfirmationView: $alertVM.isConfirmationView, alertTitle: $alertVM.alertTitle, okButtonAction: $alertVM.okBtnAction)
             }
         }
+        .animation(.easeInOut, value: alertVM.alert)
     }
 }

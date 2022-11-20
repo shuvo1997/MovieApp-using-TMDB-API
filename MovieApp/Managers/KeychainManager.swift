@@ -42,7 +42,7 @@ class KeychainManager{
     
     static func get(
         service: String
-    ) -> NSDictionary? {
+    ) -> (username: String, password: String) {
         print("Reading data")
         print(service)
         let query: [String: AnyObject] = [
@@ -61,23 +61,23 @@ class KeychainManager{
         
         guard let dic = result as? NSDictionary else {
             print("Error converting dictionary")
-            return NSDictionary()
+            return ("","")
         }
         
-//        let username = dic[kSecAttrAccount] ?? ""
-//
-//        guard let passwordData = dic[kSecValueData] as? Data else {
-//            print("Error converting password data")
-//            return NSDictionary()
-//        }
-//
-//        let password = String(data: passwordData, encoding: .utf8) ??
-//
-//        print(status)
-//        print(username)
-//        print(password)
-//
-        return dic
+        guard let username = dic[kSecAttrAccount] as? String else {
+            print("Error converting username data")
+            return ("","")
+        }
+        
+        guard let passwordData = dic[kSecValueData] as? Data else {
+            print("Error converting password data")
+            return ("","")
+        }
+        
+        let password = String(data: passwordData, encoding: .utf8) ?? ""
+        
+        return (username, password)
+        
     }
     
     static func delete(service: String) {
